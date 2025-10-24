@@ -1,10 +1,10 @@
 # QUADRATIC REGRESSION
 
 ## Used libraries
-1)numpy
-2)torch
-3)matplotlib
-4)pandas
+1)numpy\n
+2)torch\n
+3)matplotlib\n
+4)pandas\n
 
 ## Fucntion
 ### Train(init_type, lr, noise_level)
