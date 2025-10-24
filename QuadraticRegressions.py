@@ -11,7 +11,7 @@ def train(init_type, lr, noise_level):
     x = torch.rand(100,1, dtype = torch.float64)
     y = 1 + 2*x + 0.5*x**2 + noise_level*torch.rand(100,1, dtype = torch.float64)
 
-    idx = torch.randperm(100)
+    idx = (torch.rand(100)*100).long()
 
     train_idx = idx[:80]
     val_idx = idx[80:]
@@ -23,13 +23,13 @@ def train(init_type, lr, noise_level):
         b = torch.zeros(1,requires_grad = True, dtype = torch.float64)
         c = torch.zeros(1, requires_grad = True, dtype = torch.float64)
     elif init_type == 'N(0,1)':
-        a = torch.randn(1,requires_grad = True, dtype = torch.float64)
-        b = torch.randn(1,requires_grad = True, dtype = torch.float64)
-        c = torch.randn(1, requires_grad = True, dtype = torch.float64)
+        a = torch.rand(1,requires_grad = True, dtype = torch.float64)
+        b = torch.rand(1,requires_grad = True, dtype = torch.float64)
+        c = torch.rand(1, requires_grad = True, dtype = torch.float64)
     elif init_type == 'U(1000,2000)':
-        a = torch.nn.Parameter(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000)
-        b = torch.nn.Parameter(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000)
-        c = torch.nn.Parameter(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000)
+        a = torch.tensor(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000, dtype = torch.float64, requires_grad= True)
+        b = torch.tensor(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000, dtype = torch.float64, requires_grad= True)
+        c = torch.tensor(torch.rand(1,requires_grad = True, dtype = torch.float64)*1000 + 1000, dtype = torch.float64, requires_grad= True)
 
     print("initial values: ", a, b , c )
     print('\n')
@@ -53,16 +53,18 @@ def train(init_type, lr, noise_level):
         yhat = a + b*x_train + c*x_train**2
         yres = a + b*x_val + c*x_val**2
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(x_val.numpy(), y_val.numpy(), "r", lw=0, marker="^", label='True values')
-    plt.plot(x_val.numpy(), yres.numpy(), "g", lw=0, marker="+", label='Predictions')
-    plt.title(f'Init: {init_type}, LR: {lr}, Noise: {noise_level}\nParams: a={a.item():.3f}, b={b.item():.3f}, c={c.item():.3f}')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
+#Расскоментируйте, если хотите посмотреть графики функций!
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(x_val.numpy(), y_val.numpy(), "r", lw=0, marker="^", label='True values')
+    # plt.plot(x_val.numpy(), yres.numpy(), "g", lw=0, marker="+", label='Predictions')
+    # plt.title(f'Init: {init_type}, LR: {lr}, Noise: {noise_level}\nParams: a={a.item():.3f}, b={b.item():.3f}, c={c.item():.3f}')
+    # plt.xlabel('x')
+    # plt.ylabel('y')
+    # plt.legend()
+    # plt.grid(True, alpha=0.3)
+    # plt.show()
 
+    
     return {'a': a,
             'b': b,
             'c': c,
@@ -111,7 +113,9 @@ for result in results:
     }
     data.append(row)
 
-df = pd.DataFrame(data)
-print(f"\nВсего экспериментов: {len(df)}")
-df.to_csv('training_results.csv', index=False)
-print("\nDataFrame сохранен в 'training_results.csv'") 
+print(f"\nВсего экспериментов: {len(data)}")
+
+#Раскоментируйте если хотите создать DataFrame!
+# df = pd.DataFrame(data)
+# df.to_csv('training_results.csv', index=False)
+# print("\nDataFrame сохранен в 'training_results.csv'") 
