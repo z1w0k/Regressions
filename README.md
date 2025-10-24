@@ -71,3 +71,46 @@ Afterwards, if you want, you can remove the comments to see the graphs of our fu
             'noise_level': noise_level
             } 
 ```
+## Main
+The parameters are initialized and after that the function is run with all possible parameters.
+```
+init_types = ['zeroes', 'N(0,1)', 'U(1000,2000)']
+learning_rates = [0.001, 0.01, 0.1, 0.5, 0.7, 0.9]
+noise_levels = [0.01, 0.1, 0.5, 1.0]
+
+results = []
+for init_type in init_types:
+    for lr in learning_rates:
+        for noise_level in noise_levels:
+            print(f"Trainig with init_types = {init_type}, lr = {lr}, noise = {noise_level}")
+            result = train(init_type, lr, noise_level)
+            results.append(result)
+            train_error = torch.mean((result['y_train'] - result['yhat'])**2)
+            val_error = torch.mean((result['y_val'] - result['yres'])**2)
+            
+            print(f"Train error: {train_error.item():.6f}")
+            print(f"Validation error: {val_error.item():.6f}")
+            print("-" * 50)
+```
+And after that all the things are done to create a DataFrame.
+```
+data = []
+for result in results:
+    row = {
+        'init_type': result['init_type'],
+        'lr': result['lr'],
+        'noise_level': result['noise_level'],
+        'a': result['a'].item(),
+        'b': result['b'].item(),
+        'c': result['c'].item(),
+        'train_error': torch.mean((result['y_train'] - result['yhat'])**2).item(),
+        'val_error': torch.mean((result['y_val'] - result['yres'])**2).item()
+    }
+    data.append(row)
+
+print(f"\nВсего экспериментов: {len(data)}")
+
+ df = pd.DataFrame(data)
+ df.to_csv('training_results.csv', index=False)
+ print("\nDataFrame сохранен в 'training_results.csv'") 
+```
